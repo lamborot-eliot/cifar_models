@@ -1,21 +1,13 @@
 dependencies = ['torch']
 from torchvision.models.resnet import resnet18 as _resnet18
 from charles.src.effnet_models.mobilenetv2_dense import MobileNetV2 as _mobilenetv2
-import torch
+from charles.src.resnet_model.resnet_dense import ResNet34 as _resnet34
 
-# resnet18 is the name of entrypoint
-def resnet18(pretrained=False, **kwargs):
-    """ # This docstring shows up in hub.help()
-    Resnet18 model
-    pretrained (bool): kwargs, load pretrained weights into the model
-    """
-    # Call the model, load pretrained weights
-    model = _resnet18(pretrained=pretrained, **kwargs)
-    return model
+import torch
 
 def mobilenetv2(pretrained=False, **kwargs):
     """ # This docstring shows up in hub.help()
-    robustMobileNetV2 model
+    mobilenetv2 model
     pretrained (bool): kwargs, load pretrained weights into the model
     """
     # Call the model, load pretrained weights
@@ -24,8 +16,18 @@ def mobilenetv2(pretrained=False, **kwargs):
         model.load_state_dict(torch.load('charles/cifar10_models/mobilenet_pgd_dense.pth'))
     return model
 
+def resnet34(pretrained=False, **kwargs):
+    """ # This docstring shows up in hub.help()
+    resnet34 model
+    pretrained (bool): kwargs, load pretrained weights into the model
+    """
+    # Call the model, load pretrained weights
+    model = _resnet34(**kwargs)
+    if pretrained:
+        model.load_state_dict(torch.load('charles/cifar10_models/resnet_pgd.pth'))
+    return model
 
 
 if __name__=="__main__":
-    model = mobilenetv2(pretrained=True)
+    model = resnet34(pretrained=True)
     print(model.__class__)
