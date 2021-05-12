@@ -4,6 +4,7 @@ from charles.src.effnet_models.mobilenetv2_dense import MobileNetV2 as _mobilene
 from charles.src.resnet_model.resnet_dense import ResNet34 as _resnet34
 
 import torch
+import os
 
 def mobilenetv2(pretrained=False, **kwargs):
     """ # This docstring shows up in hub.help()
@@ -13,7 +14,9 @@ def mobilenetv2(pretrained=False, **kwargs):
     # Call the model, load pretrained weights
     model = _mobilenetv2(**kwargs)
     if pretrained:
-        model.load_state_dict(torch.load('charles/cifar10_models/mobilenet_pgd_dense.pth'))
+        dirname = os.path.dirname(__file__)
+        checkpoint = os.path.join(dirname, 'charles/cifar10_models/mobilenet_pgd_dense.pth')
+        model.load_state_dict(torch.load(checkpoint))
     return model
 
 def resnet34(pretrained=False, **kwargs):
@@ -24,7 +27,9 @@ def resnet34(pretrained=False, **kwargs):
     # Call the model, load pretrained weights
     model = _resnet34(**kwargs)
     if pretrained:
-        model.load_state_dict(torch.load('charles/cifar10_models/resnet_pgd.pth'))
+        dirname = os.path.dirname(__file__)
+        checkpoint = os.path.join(dirname, 'charles/cifar10_models/resnet_pgd.pth')
+        model.load_state_dict(torch.load(checkpoint))
     return model
 
 
