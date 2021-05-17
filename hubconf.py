@@ -1,4 +1,4 @@
-dependencies = ['torch']
+dependencies = ['torch', 'torchvision']
 from torchvision.models.resnet import resnet18 as _resnet18
 from charles.src.effnet_models.mobilenetv2_dense import MobileNetV2 as _mobilenetv2
 from charles.src.resnet_model.resnet_dense import ResNet34 as _resnet34
