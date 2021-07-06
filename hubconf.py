@@ -8,6 +8,54 @@ from ACL.models.resnet import resnet18 as _aclResnet18
 import torch
 import os
 
+def cvt_state_dict(state_dict, num_classes):
+
+    # deal with adv bn
+    state_dict_new = copy.deepcopy(state_dict)
+
+    if 1 >= 0:
+        for name, item in state_dict.items():
+            if 'bn' in name:
+                assert 'bn_list' in name
+                state_dict_new[name.replace(
+                    '.bn_list.{}'.format(1), '')] = item
+
+
+    name_to_del = []
+    for name, item in state_dict_new.items():
+        # print(name)
+        if 'bn' in name and 'adv' in name:
+            name_to_del.append(name)
+        if 'bn_list' in name:
+            name_to_del.append(name)
+        if 'fc' in name:
+            name_to_del.append(name)
+    for name in np.unique(name_to_del):
+        del state_dict_new[name]
+
+    # deal with down sample layer
+    keys = list(state_dict_new.keys())[:]
+    name_to_del = []
+    for name in keys:
+        if 'downsample.conv' in name:
+            state_dict_new[name.replace(
+                'downsample.conv', 'downsample.0')] = state_dict_new[name]
+            name_to_del.append(name)
+        if 'downsample.bn' in name:
+            state_dict_new[name.replace(
+                'downsample.bn', 'downsample.1')] = state_dict_new[name]
+            name_to_del.append(name)
+    for name in np.unique(name_to_del):
+        del state_dict_new[name]
+
+    # zero init fc
+    state_dict_new['fc.weight'] = torch.zeros(
+        num_classes, 512).to(state_dict['conv1.weight'].device)
+    state_dict_new['fc.bias'] = torch.zeros(
+        num_classes).to(state_dict['conv1.weight'].device)
+
+    return state_dict_new
+
 def mobilenetv2(pretrained=False, **kwargs):
     """ # This docstring shows up in hub.help()
     mobilenetv2 model
@@ -51,7 +99,8 @@ def resnet18ACL(pretrained=False, **kwargs):
             state_dict = checkpoint['P_state']
         else:
             state_dict = checkpoint
-
+            
+        state_dict = cvt_state_dict(state_dict, num_classes=10)
         model.load_state_dict(state_dict)
     return model
 
