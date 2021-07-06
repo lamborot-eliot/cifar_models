@@ -43,6 +43,27 @@ def resnet18ACL(pretrained=False, **kwargs):
     model = _aclResnet18(num_classes=10, **kwargs)
     if pretrained:
         dirname = os.path.dirname(__file__)
+        checkpoint = os.path.join(dirname, './ACL/downloaded_checkpoints/ACL_DS.pt')
+        checkpoint = torch.load(checkpoint, map_location="cpu")
+        if 'state_dict' in checkpoint:
+            state_dict = checkpoint['state_dict']
+        elif 'P_state' in checkpoint:
+            state_dict = checkpoint['P_state']
+        else:
+            state_dict = checkpoint
+
+        model.load_state_dict(state_dict)
+    return model
+
+def resnet18ACL_finetuned(pretrained=False, **kwargs):
+    """ # This docstring shows up in hub.help()
+    acl resnet18 model
+    pretrained (bool): kwargs, load pretrained weights into the model
+    """
+    # Call the model, load pretrained weights
+    model = _aclResnet18(num_classes=10, **kwargs)
+    if pretrained:
+        dirname = os.path.dirname(__file__)
         checkpoint = os.path.join(dirname, './ACL/downloaded_checkpoints/ACL_DS_TUNE.pt')
         checkpoint = torch.load(checkpoint, map_location="cpu")
         if 'state_dict' in checkpoint:
