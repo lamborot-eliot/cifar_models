@@ -8,6 +8,9 @@ from ACL.models.resnet import resnet18 as _aclResnet18
 import torch
 import os
 
+import copy
+import numpy as np
+
 def cvt_state_dict(state_dict, num_classes):
 
     # deal with adv bn
