@@ -87,6 +87,19 @@ def resnet34(pretrained=False, **kwargs):
         model.load_state_dict(torch.load(checkpoint))
     return model
 
+def resnet34_noAT(pretrained=False, **kwargs):
+    """ # This docstring shows up in hub.help()
+    resnet34 model
+    pretrained (bool): kwargs, load pretrained weights into the model
+    """
+    # Call the model, load pretrained weights
+    model = _resnet34(**kwargs)
+    if pretrained:
+        dirname = os.path.dirname(__file__)
+        checkpoint = os.path.join(dirname, 'charles/cifar10_models/resnet_dense1.pth')
+        model.load_state_dict(torch.load(checkpoint))
+    return model
+
 def resnet18ACL(pretrained=False, **kwargs):
     """ # This docstring shows up in hub.help()
     acl resnet18 model
