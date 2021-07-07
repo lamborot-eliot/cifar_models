@@ -105,10 +105,10 @@ def resnet18ACL(pretrained=False, **kwargs):
     acl resnet18 model
     pretrained (bool): kwargs, load pretrained weights into the model
     """
-    # Call the model, load pretrained weights
+   # Call the model, load pretrained weights
     model = pretraining_resnet18(pretrained=False, bn_names = ['normal', 'pgd'])
     ch = model.fc.in_features
-    model.fc = proj_head(ch, bn_names=bn_names, twoLayerProj=args.twoLayerProj)
+    model.fc = proj_head(ch, bn_names=['normal', 'pgd'], twoLayerProj=False)
     
     
     if pretrained:
@@ -117,12 +117,9 @@ def resnet18ACL(pretrained=False, **kwargs):
         checkpoint = torch.load(checkpoint, map_location="cpu")
         if 'state_dict' in checkpoint:
             state_dict = checkpoint['state_dict']
-        elif 'P_state' in checkpoint:
-            state_dict = checkpoint['P_state']
         else:
             state_dict = checkpoint
             
-        state_dict = cvt_state_dict(state_dict, num_classes=10)
         model.load_state_dict(state_dict)
     return model
 
