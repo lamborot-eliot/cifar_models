@@ -4,6 +4,8 @@ from charles.src.effnet_models.mobilenetv2_dense import MobileNetV2 as _mobilene
 from charles.src.resnet_model.resnet_dense import ResNet34 as _resnet34
 
 from ACL.models.resnet import resnet18 as _aclResnet18
+from ACL.models.resnet_multi_bn import resnet18 as pretraining_resnet18
+from ACL.models.resnet_multi_bn import proj_head
 
 import torch
 import os
@@ -91,7 +93,11 @@ def resnet18ACL(pretrained=False, **kwargs):
     pretrained (bool): kwargs, load pretrained weights into the model
     """
     # Call the model, load pretrained weights
-    model = _aclResnet18(num_classes=10, **kwargs)
+    model = pretraining_resnet18(pretrained=False, bn_names = ['normal', 'pgd'])
+    ch = model.fc.in_features
+    model.fc = proj_head(ch, bn_names=bn_names, twoLayerProj=args.twoLayerProj)
+    
+    
     if pretrained:
         dirname = os.path.dirname(__file__)
         checkpoint = os.path.join(dirname, './ACL/downloaded_checkpoints/ACL_DS.pt')
