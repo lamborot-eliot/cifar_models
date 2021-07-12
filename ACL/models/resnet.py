@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-from torchvision.models.utils import load_state_dict_from_url
+# from torchvision.models.utils import load_state_dict_from_url
 from .utils import NormalizeByChannelMeanStd
 
 
@@ -227,9 +227,10 @@ class ResNet(nn.Module):
 def _resnet(arch, block, layers, pretrained, progress, **kwargs):
     model = ResNet(block, layers, **kwargs)
     if pretrained:
-        state_dict = load_state_dict_from_url(model_urls[arch],
-                                              progress=progress)
-        model.load_state_dict(state_dict)
+        print("I removed this for compatatibily reasons with old torchvsion versions")
+#         state_dict = load_state_dict_from_url(model_urls[arch],
+#                                               progress=progress)
+#         model.load_state_dict(state_dict)
     return model
 
 
