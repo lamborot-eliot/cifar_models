@@ -352,7 +352,7 @@ def resnet18(pretrained=False, progress=True, **kwargs):
     return _resnet('resnet18', BasicBlock, [2, 2, 2, 2], pretrained, progress,
                    **kwargs)
 
-def resnet18_activation(pretrained=False, progress=True, activationFunction=torch.nn.SiLU, **kwargs):
+def resnet18_activation(pretrained=False, progress=True, activationFunction=torch.nn.ReLU, **kwargs):
     r"""ResNet-18 model from
     `"Deep Residual Learning for Image Recognition" <https://arxiv.org/pdf/1512.03385.pdf>`_
 
